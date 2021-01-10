@@ -18,6 +18,7 @@
     path: /kustomize/argocd-install-{{ argocd.variant | default('default') }}/{{ item.path }}
     state: directory
     mode: 0755
+    owner: vagrant
   with_filetree: "/vagrant/variants/{{ argocd.variant | default('default') }}"
   when: item.state == 'directory'
 
@@ -26,13 +27,24 @@
     src: '{{ item.src }}'
     dest: /kustomize/argocd-install-{{ argocd.variant | default('default') }}/{{ item.path }}
     mode: 0644
+    owner: vagrant
   with_filetree: "/vagrant/variants/{{ argocd.variant | default('default') }}"
   when: item.state == 'file'
+
+- name: Set Argo CD image to use in the manifests
+  shell:
+    cmd: kustomize edit set image argoproj/argocd={{ argocd.image }}
+    chdir: /kustomize/argocd-install-{{ argocd.variant | default('default') }}/{{ kustomize.base | default('base') }}
+  become: yes
+  become_user: vagrant
+  when: argocd.image is defined
 
 - name: Build Argo CD manifests with Kustomize
   shell:
     cmd: kustomize build --load_restrictor LoadRestrictionsNone . > /kustomize/argocd-install-{{ argocd.variant | default('default') }}.yaml
     chdir: /kustomize/argocd-install-{{ argocd.variant | default('default') }}/{{ kustomize.base | default('base') }}
+  become: yes
+  become_user: vagrant
 
 - name: Apply Argo CD manifests to the cluster
   k8s:
