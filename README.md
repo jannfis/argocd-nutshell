@@ -1,7 +1,5 @@
 # Argo CD in a nutshell
 
-## What is it?
-
 Zero-conf, repeatable
 [Argo CD](https://argoproj.github.io/argo-cd/)
 environments for demoing, development purposes or troubleshooting (i.e. to
@@ -112,6 +110,7 @@ And then hope it will work out.
 ## Status
 
 This has just been born, and is not ready for general consumption. Feel free
-to use it in the default configuration. Expect to hack on it.
+to use it in the default configuration. Expect to hack on it. It has lots
+and lots of rough edges and pitfalls.
 
 **YMMV.**
