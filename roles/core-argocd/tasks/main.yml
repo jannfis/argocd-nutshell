@@ -1,0 +1,67 @@
+- name: Ensure argocd namespace exists
+  k8s:
+    name: argocd
+    kind: Namespace
+    state: present
+  become: yes
+  become_user: vagrant
+
+- name: Ensure Kustomize source dir exists
+  file:
+    path: /kustomize/argocd-install-{{ argocd.variant | default('default') }}
+    state: directory
+    mode: 0755
+    owner: vagrant
+
+- name: Create Kustomize directories
+  file:
+    path: /kustomize/argocd-install-{{ argocd.variant | default('default') }}/{{ item.path }}
+    state: directory
+    mode: 0755
+  with_filetree: "/vagrant/variants/{{ argocd.variant | default('default') }}"
+  when: item.state == 'directory'
+
+- name: Template out Kustomize sources
+  template:
+    src: '{{ item.src }}'
+    dest: /kustomize/argocd-install-{{ argocd.variant | default('default') }}/{{ item.path }}
+    mode: 0644
+  with_filetree: "/vagrant/variants/{{ argocd.variant | default('default') }}"
+  when: item.state == 'file'
+
+- name: Build Argo CD manifests with Kustomize
+  shell:
+    cmd: kustomize build --load_restrictor LoadRestrictionsNone . > /kustomize/argocd-install-{{ argocd.variant | default('default') }}.yaml
+    chdir: /kustomize/argocd-install-{{ argocd.variant | default('default') }}/{{ kustomize.base | default('base') }}
+
+- name: Apply Argo CD manifests to the cluster
+  k8s:
+    src: /kustomize/argocd-install-{{ argocd.variant | default('default') }}.yaml
+    namespace: argocd
+    state: present
+  become: yes
+  become_user: vagrant
+
+- name: Fetch and install argocd client
+  get_url:
+    url: https://github.com/argoproj/argo-cd/releases/download/{{ argocd.cli.version }}/argocd-linux-amd64
+    dest: /usr/local/bin/argocd
+    mode: 0755
+
+- name: Wait for argocd-server replicaset to become ready
+  shell:
+    cmd: kubectl get -n argocd deployments.apps argocd-server -o jsonpath='{ .status.readyReplicas }' 
+  register: replicas
+  until: replicas.stdout == "1"
+  retries: 30
+  delay: 10
+  when: argocd.cli.autologin is true
+  become: yes
+  become_user: vagrant
+
+- name: Perform login to argocd
+  shell:
+    cmd: /usr/local/bin/argocd login --username admin --password admin --insecure {{ argocd.service_ip }}
+  when: argocd.cli.autologin is true
+  become: yes
+  become_user: vagrant

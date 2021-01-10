@@ -1,0 +1,6 @@
+- hosts: all
+  name: Prepare Kubernetes infrastructure
+  roles:
+  - core-kubernetes
+  - core-kustomize
+  - core-argocd

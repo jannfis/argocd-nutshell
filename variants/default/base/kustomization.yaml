@@ -1,0 +1,12 @@
+resources:
+- https://github.com/argoproj/argo-cd/manifests/cluster-install?ref={{ argocd.version }}
+
+patchesStrategicMerge:
+- ../overlays/argocd-server-service.yaml
+
+patches:
+  - path: ../patches/argocd-secret.json
+    target:
+      version: v1
+      kind: Secret
+      name: argocd-secret

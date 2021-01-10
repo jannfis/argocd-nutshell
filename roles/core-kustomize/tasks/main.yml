@@ -1,0 +1,40 @@
+- get_url:
+    url: https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.9.1/kustomize_v3.9.1_linux_amd64.tar.gz
+    dest: /tmp/kustomize.tar.gz
+    checksum: sha256:0fb2c3299ca3668205eac3a3a5be9a8e4a79d7c4fba18542a6c444e0d33ddbdd
+  name: Fetch Kustomize from GitHub
+- unarchive:
+    src: /tmp/kustomize.tar.gz
+    dest: /usr/local/bin
+    mode: 0755
+    creates: /usr/local/bin/kustomize
+  name: Extract Kustomize binary
+- get_url:
+    url: https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubectx
+    dest: /usr/local/bin/kubectx
+    mode: 0755
+    checksum: sha256:b1a0fcfb0073b488620a4e40de24a354a44354f277a355b793d80d8674284bd4
+  name: Fetch kubectx tool
+- get_url:
+    url: https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubens
+    dest: /usr/local/bin/kubens
+    mode: 0755
+    checksum: sha256:509c97c0882e688ae8fad8aa13524cc7c003e4883db447a905bdb47d64c13bdc
+  name: Fetch kubens tool
+- get_url:
+    url: https://github.com/ahmetb/kubectx/raw/v0.9.1/completion/kubectx.bash
+    dest: /usr/share/bash-completion/completions/kubectx
+    mode: 0644
+    checksum: sha256:3a3ada36a5ada06eb0d2d102d85e7878f22029ef5d7f11db7fc7e163ee02ce83
+  name: Install kubectx completion
+- get_url:
+    url: https://github.com/ahmetb/kubectx/raw/v0.9.1/completion/kubens.bash
+    dest: /usr/share/bash-completion/completions/kubens
+    mode: 0644
+    checksum: sha256:f075a473f87bffd17a8187d187423c2f44ada0b978c333e378890feefe172e9d
+  name: Install kubectx completion
+- lineinfile:
+    path: /home/vagrant/.bashrc
+    line: source <(kubectl completion bash)
+    state: present
+  name: Ensure kubectl completion is setup

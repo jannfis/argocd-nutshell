@@ -1,0 +1,10 @@
+# Configuration file for variant 'default'
+argocd:
+  # The variant to use
+  variant: "{{ lookup('env', 'ARGOCD_VARIANT') | default('default', True) }}"
+  # The version (tag) to use
+  version: stable
+  cli:
+    version: v1.8.2
+    autologin: true
+  service_ip: 192.168.254.100

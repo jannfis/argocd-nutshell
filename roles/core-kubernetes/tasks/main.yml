@@ -1,0 +1,31 @@
+- snap: 
+    name: microk8s
+    channel: "1.19"
+    classic: yes
+  name: Install microk8s
+
+- snap:
+    name: kubectl
+    classic: yes
+  name: Install kubectl
+
+- file:
+    path: /home/vagrant/.kube
+    state: directory
+    owner: vagrant
+  name: Ensure kubeconfig directory exists
+
+- shell: 
+    cmd: microk8s.kubectl config view --raw > /home/vagrant/.kube/config
+    creates: /home/vagrant/.kube/config
+  name: Ensure kubeconfig exists
+
+- file:
+    path: /home/vagrant/.kube/config
+    owner: vagrant
+    mode: 0644
+    state: file
+  name: Ensure kube config has correct permissions
+
+- shell: microk8s.enable dns rbac metallb:192.168.254.100-192.168.254.250
+  name: Enable microk8s features
