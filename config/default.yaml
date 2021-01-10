@@ -2,9 +2,22 @@
 argocd:
   # The variant to use
   variant: "{{ lookup('env', 'ARGOCD_VARIANT') | default('default', True) }}"
-  # The version (tag) to use
+
+  # The version (tag) to use as `ref` for remote kustomize base
+  # Use HEAD to get the latest version from master branch
   version: stable
+
+  # CLI specific configuration
   cli:
+    # specifices the CLI version to install (fetched from releases)
     version: v1.8.2
+    # if autologin is set to true, setup will perform login to Argo CD
     autologin: true
+
+  # The argocd-server service will be converted to be of  of type LoadBalancer
+  # and the service_ip will be requested to be set.
   service_ip: 192.168.254.100
+
+  # argocd.image lets you use a different image than in the manifests
+  # OPTIONAL.
+  #image: quay.io/argoproj/argocd:v1.8.1
