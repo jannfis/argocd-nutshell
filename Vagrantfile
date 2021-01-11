@@ -8,6 +8,18 @@ VM_MEM=8096
 # on your host.
 VM_IPADDR="192.168.254.2"
 
+# The following environment variables will be set in the box, and are required
+# by the ansible provisioner as well.
+$set_environment_variables = <<SCRIPT
+tee "/etc/profile.d/myvars.sh" > "/dev/null" <<EOF
+export ARGOCD_VERSION=#{ENV['ARGOCD_VERSION']}
+export ARGOCD_CLI_VERSION=#{ENV['ARGOCD_CLI_VERSION']}
+export ARGOCD_IMAGE=#{ENV['ARGOCD_IMAGE']}
+export ARGOCD_VARIANT=#{ENV['ARGOCD_VARIANT']}
+export K3S_VERSION=#{ENV['K3S_VERSION']}
+EOF
+SCRIPT
+
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/groovy64"
   config.vm.hostname = "argocd-nutshell"
@@ -50,6 +62,10 @@ Vagrant.configure("2") do |config|
       pip3 install ansible=="2.9.16"
       pip3 install openshift
     SHELL
+  end
+
+  config.vm.provision "shell" do |s|
+    s.inline = $set_environment_variables
   end
 
   # Provision the box using a local ansible. 
