@@ -77,8 +77,27 @@ has been provisioned:
 
 * `kubectl` pre-configured and with shell completion set-up
 * `kubectx` and `kubens` too, also with shell completion set-up
-* a `kustomize` binary in `/usr/local/bin`
-* The `argocd` CLI, ready to use logged into the Argo CD instance
+* a `kustomize` binary in `/usr/local/bin` (version 3.9.1)
+* The latest released `argocd` CLI, ready to use logged into the Argo CD
+  instance
+
+## Installing other Argo CD versions
+
+You can override the Argo CD version installed by the `default` variant by
+setting some environment variables before running `vagrant up`:
+
+* `ARGOCD_VERSION`: This lets you specify another version of the manifests
+  to install. This can be either a tag name (such as `v1.8.2` or `stable`),
+  or use `HEAD` to use the latest manifests from `master` branch.
+
+* `ARGOCD_CLI_VERSION`: Lets you specify the release tag of the Argo CD CLI
+  to install. The special value `latest` (which is also the default) will
+  look up the latest released version of the CLI from GitHub and install it.
+
+* `ARGOCD_IMAGE`: Lets you override the Argo CD container image to use with
+  the manifests. This must be the full path and tag to the image, e.g.
+  `quay.io/argoproj/argocd:v1.8.2`. By default, the images as defined in the
+  manifests will be used.
 
 ## Customization
 

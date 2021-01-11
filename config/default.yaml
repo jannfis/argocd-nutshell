@@ -5,12 +5,12 @@ argocd:
 
   # The version (tag) to use as `ref` for remote kustomize base
   # Use HEAD to get the latest version from master branch
-  version: stable
+  version: "{{ lookup('env', 'ARGOCD_VERSION') | default('stable', True) }}"
 
   # CLI specific configuration
   cli:
     # specifices the CLI version to install (fetched from releases)
-    version: v1.8.2
+    version: "{{ lookup('env', 'ARGOCD_CLI_VERSION') | default('latest', True) }}"
     # if autologin is set to true, setup will perform login to Argo CD
     autologin: true
 
@@ -20,4 +20,4 @@ argocd:
 
   # argocd.image lets you use a different image than in the manifests
   # OPTIONAL.
-  #image: quay.io/argoproj/argocd:v1.8.1
+  image: "{{ lookup('env', 'ARGOCD_IMAGE') }}"

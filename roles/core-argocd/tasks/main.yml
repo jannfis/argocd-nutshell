@@ -37,7 +37,7 @@
     chdir: /kustomize/argocd-install-{{ argocd.variant | default('default') }}/{{ kustomize.base | default('base') }}
   become: yes
   become_user: vagrant
-  when: argocd.image is defined
+  when: argocd.image is defined and argocd.image != ""
 
 - name: Build Argo CD manifests with Kustomize
   shell:
@@ -54,18 +54,24 @@
   become: yes
   become_user: vagrant
 
+- name: Get latest Argo CD CLI version from GitHub
+  shell:
+    cmd: curl --silent "https://api.github.com/repos/argoproj/argo-cd/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/'
+  register: argocd_cli_latest
+  when: argocd.cli.version is not defined or argocd.cli.version == "latest" or argocd.cli.version == "stable"
+
 - name: Fetch and install argocd client
   get_url:
-    url: https://github.com/argoproj/argo-cd/releases/download/{{ argocd.cli.version }}/argocd-linux-amd64
+    url: https://github.com/argoproj/argo-cd/releases/download/{{ argocd.cli.version | default(argocd_cli_latest.stdout, True) }}/argocd-linux-amd64
     dest: /usr/local/bin/argocd
     mode: 0755
 
-- name: Wait for argocd-server replicaset to become ready
+- name: Wait up to 10 minutes for argocd-server replicaset to become ready
   shell:
     cmd: kubectl get -n argocd deployments.apps argocd-server -o jsonpath='{ .status.readyReplicas }' 
   register: replicas
   until: replicas.stdout == "1"
-  retries: 30
+  retries: 60
   delay: 10
   when: argocd.cli.autologin is true
   become: yes
