@@ -57,12 +57,12 @@
 - name: Get latest Argo CD CLI version from GitHub
   shell:
     cmd: curl --silent "https://api.github.com/repos/argoproj/argo-cd/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/'
-  register: argocd_cli_latest
+  register: argocd_cli_version
   when: argocd.cli.version is not defined or argocd.cli.version == "latest" or argocd.cli.version == "stable"
 
 - name: Fetch and install argocd client
   get_url:
-    url: https://github.com/argoproj/argo-cd/releases/download/{{ argocd.cli.version | default(argocd_cli_latest.stdout, True) }}/argocd-linux-amd64
+    url: https://github.com/argoproj/argo-cd/releases/download/{{ argocd_cli_version.stdout | default(argocd.cli.version, True) }}/argocd-linux-amd64
     dest: /usr/local/bin/argocd
     mode: 0755
 
