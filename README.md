@@ -81,9 +81,9 @@ has been provisioned:
 * The latest released `argocd` CLI, ready to use logged into the Argo CD
   instance
 
-## Installing other Argo CD versions
+## Installing other versions
 
-You can override the Argo CD version installed by the `default` variant by
+You can override the versions installed by the `default` variant by
 setting some environment variables before running `vagrant up`:
 
 * `ARGOCD_VERSION`: This lets you specify another version of the manifests
@@ -98,6 +98,18 @@ setting some environment variables before running `vagrant up`:
   the manifests. This must be the full path and tag to the image, e.g.
   `quay.io/argoproj/argocd:v1.8.2`. By default, the images as defined in the
   manifests will be used.
+
+* `K3S_VERSION`: The fully qualified version of K3S to install, e.g.
+  `v1.20.0+k3s2`. Look at the
+  [K3s releases](https://github.com/k3s-io/k3s/releases) for valid versions.
+  Pre-releases are not supported by the installer.
+
+For example, if you want to install Argo CD v1.7.11 with accompanying CLI on a
+Kubernetes 1.18.6 cluster, create the box as follows:
+
+```bash
+ARGOCD_VERSION=v1.7.11 ARGOCD_CLI_VERSION=v1.7.11 K3S_VERSION=v1.18.6+k3s1 vagrant up
+```
 
 ## Customization
 
