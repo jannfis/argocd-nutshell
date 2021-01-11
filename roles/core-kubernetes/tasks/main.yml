@@ -1,31 +1,68 @@
-- snap: 
-    name: microk8s
-    channel: "1.19"
-    classic: yes
-  name: Install microk8s
+- name: Fetch K3s installation script
+  get_url:
+    url: https://get.k3s.io/
+    dest: /tmp/install-k3s.sh
+    mode: 0755
 
-- snap:
-    name: kubectl
-    classic: yes
-  name: Install kubectl
+- name: Install K3s version {{ kubernetes.version }}
+  shell:
+    cmd: /tmp/install-k3s.sh
+  environment:
+    INSTALL_K3S_VERSION: "{{ kubernetes.version | default('1.20.2', True) }}+k3s1"
+    # We install metallb
+    INSTALL_K3S_EXEC: "--disable servicelb"
 
-- file:
+- name: Ensure permissions on K3s directories
+  file:
+    path: /etc/rancher/k3s
+    state: directory
+    owner: vagrant
+    mode: 0755
+
+- name: Ensure permissions on K3s kubeconfig
+  file:
+    path: /etc/rancher/k3s/k3s.yaml
+    owner: vagrant
+    mode: 0644
+
+- name: Ensure kubeconfig directory exists
+  file:
     path: /home/vagrant/.kube
     state: directory
     owner: vagrant
-  name: Ensure kubeconfig directory exists
 
-- shell: 
-    cmd: microk8s.kubectl config view --raw > /home/vagrant/.kube/config
+- name: Ensure kubeconfig exists
+  shell: 
+    cmd: k3s kubectl config view --raw > /home/vagrant/.kube/config
     creates: /home/vagrant/.kube/config
-  name: Ensure kubeconfig exists
 
-- file:
+- name: Ensure kube config has correct permissions
+  file:
     path: /home/vagrant/.kube/config
     owner: vagrant
     mode: 0644
     state: file
-  name: Ensure kube config has correct permissions
 
-- shell: microk8s.enable dns rbac metallb:192.168.254.100-192.168.254.250
-  name: Enable microk8s features
+- name: Ensure metallb-system namespace exists
+  k8s:
+    api_version: v1
+    kind: Namespace
+    name: metallb-system
+    state: present
+  become: yes
+  become_user: vagrant
+
+- name: Render metallb manifests
+  shell:
+    cmd: kustomize build . > /tmp/metallb-manifests.yaml
+    chdir: /vagrant/kube/metallb
+  become: yes
+  become_user: vagrant
+
+- name: Install metallb into the cluster
+  k8s:
+    src: /tmp/metallb-manifests.yaml
+    namespace: metallb-system
+    state: present
+  become: yes
+  become_user: vagrant
