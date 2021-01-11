@@ -6,7 +6,7 @@ environments for demoing, development purposes or troubleshooting (i.e. to
 reproduce an issue on a clean environment) using
 [Vagrant](https://www.vagrantup.com/)
 and
-[microk8s](https://microk8s.io/)
+[k3s](https://k3s.io/)
 in a single-node setup.
 
 Please be aware that this is work in progress, and mainly serves for my own
@@ -70,7 +70,7 @@ within the directory that contains the `Vagrantfile`.
 
 ## What's in it?
 
-On top of the already mentioned microk8s cluster and a default installation
+On top of the already mentioned K3s cluster and a default installation
 of Argo CD with minor customisation (i.e. service of type LoadBalancer and
 an admin password set), the following is currently included after the box
 has been provisioned:
