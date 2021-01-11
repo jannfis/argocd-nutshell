@@ -2,5 +2,5 @@
   name: Prepare Kubernetes infrastructure
   roles:
   - core-kubernetes
-  - core-kustomize
+  - core-tools
   - core-argocd
