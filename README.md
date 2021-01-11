@@ -81,9 +81,12 @@ has been provisioned:
 * The latest released `argocd` CLI, ready to use logged into the Argo CD
   instance
 
-## Installing other versions
+## Versions
 
-You can override the versions installed by the `default` variant by
+By default, the most recent stable versions of Argo CD and K3S will be
+installed in the box.
+
+You can override (pin) the versions installed by the `default` variant by
 setting some environment variables before running `vagrant up`:
 
 * `ARGOCD_VERSION`: This lets you specify another version of the manifests
