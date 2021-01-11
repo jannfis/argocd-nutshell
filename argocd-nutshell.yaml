@@ -1,6 +1,6 @@
 - hosts: all
   name: Prepare Kubernetes infrastructure
   roles:
-  - core-kubernetes
   - core-tools
+  - core-kubernetes
   - core-argocd
