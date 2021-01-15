@@ -1,0 +1,5 @@
+resources:
+- ../../default/base
+
+patchesStrategicMerge:
+- ../overlays/argocd-cm.yaml

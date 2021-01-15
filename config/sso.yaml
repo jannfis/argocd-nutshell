@@ -1,0 +1,36 @@
+# Configuration file for variant 'default'
+argocd:
+  # The variant to use
+  variant: "{{ lookup('env', 'ARGOCD_VARIANT') | default('default', True) }}"
+
+  # The version (tag) to use as `ref` for remote kustomize base, e.g `v1.8.2`
+  # Use `HEAD` to get the latest version from master branch
+  version: "{{ lookup('env', 'ARGOCD_VERSION') | default('stable', True) }}"
+
+  # CLI specific configuration
+  cli:
+    # specifices the CLI version to install (fetched from releases),
+    # e.g. `v1.8.2`. If set to `latest`, fetches the latest released version.
+    version: "{{ lookup('env', 'ARGOCD_CLI_VERSION') | default('latest', True) }}"
+    # if autologin is set to true, setup will perform login to Argo CD
+    autologin: true
+
+  # The argocd-server service will be converted to be of  of type LoadBalancer
+  # and the service_ip will be requested to be set. Must be in the range between
+  # 192.168.254.100 and 192.168.254.240
+  service_ip: 192.168.254.100
+
+  # argocd.image lets you use a different image than in the manifests
+  # OPTIONAL.
+  image: "{{ lookup('env', 'ARGOCD_IMAGE') }}"
+
+kubernetes:
+  # Specify the Kubernetes version to use, e.g. `v1.19.5+k3s1`. We install K3s,
+  # so version specified must be available from K3s releases.
+  version: "{{ lookup('env', 'K3S_VERSION') }}"
+
+dex:
+  client_id: "{{ lookup('env', 'DEX_CLIENT_ID') }}"
+  client_secret: "{{ lookup('env', 'DEX_CLIENT_SECRET') }}"
+  gh_org_name: "{{ lookup('env', 'DEX_GH_ORG_NAME') }}"
+
