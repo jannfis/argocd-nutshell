@@ -17,6 +17,9 @@ export ARGOCD_CLI_VERSION=#{ENV['ARGOCD_CLI_VERSION']}
 export ARGOCD_IMAGE=#{ENV['ARGOCD_IMAGE']}
 export ARGOCD_VARIANT=#{ENV['ARGOCD_VARIANT']}
 export K3S_VERSION=#{ENV['K3S_VERSION']}
+export DEX_CLIENT_ID=#{ENV['DEX_CLIENT_ID']}
+export DEX_CLIENT_SECRET=#{ENV['DEX_CLIENT_SECRET']}
+export DEX_GH_ORG_NAME=#{ENV['DEX_GH_ORG_NAME']}
 EOF
 SCRIPT
 
@@ -58,7 +61,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell" do |s|
     s.inline = <<-SHELL
       apt-get update
-      apt-get install -y python3-pip
+      apt-get install -y python3-pip firefox
       pip3 install ansible=="2.9.16"
       pip3 install openshift
     SHELL
@@ -74,4 +77,6 @@ Vagrant.configure("2") do |config|
     a.become = true
     a.extra_vars = "config/#{ENV['ARGOCD_VARIANT'] || 'default'}.yaml"
   end
+
+  config.ssh.forward_x11 = true
 end
