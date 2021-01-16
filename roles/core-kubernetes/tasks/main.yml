@@ -10,7 +10,7 @@
   environment:
     INSTALL_K3S_VERSION: "{{ kubernetes.version | default('v1.20.0+k3s2', True) }}"
     # We install metallb
-    INSTALL_K3S_EXEC: "--disable servicelb"
+    INSTALL_K3S_EXEC: "--disable servicelb --disable traefik"
 
 - name: Ensure permissions on K3s directories
   file:
