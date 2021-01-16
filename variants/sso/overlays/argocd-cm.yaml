@@ -7,10 +7,10 @@ data:
   dex.config: |
     connectors:
     - config:
-        clientID: {{ dex.client_id }}
-        clientSecret: {{ dex.client_secret }}
+        clientID: {{ dex.client_id | default('') }}
+        clientSecret: {{ dex.client_secret | default('') }}
         orgs:
-        - name: {{ dex.gh_org_name }}
+        - name: {{ dex.gh_org_name | default('none') }}
         redirectURI: https://192.168.254.100/api/dex/callback
       id: github
       name: GitHub
