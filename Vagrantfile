@@ -67,7 +67,7 @@ Vagrant.configure("2") do |config|
       apt-get update
       apt-get install -y python3-pip firefox
       pip3 install ansible=="2.9.16"
-      pip3 install openshift passlib
+      pip3 install openshift=="0.11.2" passlib
     SHELL
   end
 
