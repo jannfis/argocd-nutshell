@@ -3,6 +3,7 @@ resources:
 
 patchesStrategicMerge:
 - ../overlays/argocd-server-service.yaml
+- ../overlays/argocd-cm.yaml
 
 patches:
   - path: ../patches/argocd-secret.json

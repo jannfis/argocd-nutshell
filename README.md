@@ -114,6 +114,31 @@ Kubernetes 1.18.6 cluster, create the box as follows:
 ARGOCD_VERSION=v1.7.11 ARGOCD_CLI_VERSION=v1.7.11 K3S_VERSION=v1.18.6+k3s1 vagrant up
 ```
 
+## Git repository with test data
+
+In order to have some test cases ready to use with the new Argo CD environment,
+you can have the script automatically setup a Git repository server which
+serves a configurable repository clone. It can be activated by setting the
+following environment variable before running `vagrant up`:
+
+```bash
+GIT_ENABLED=true
+```
+
+The following environment variables control what is set up:
+
+* `GIT_CLONE_REPO` - the URL to a repository to clone. Defaults to the Argo CD
+  example apps repository `https://github.com/argoproj/argocd-example-apps`
+
+* `GIT_CHECKOUT` - if set to `true`, will checkout the repository from the
+  environment's own repository server (*not* the upstream repository) in the
+  home directory of the `vagrant` user. You can then modify, commit and
+  push from that local checkout without modifying upstream (to keep results
+  initially predictable). Defaults to `true`.
+
+* `GIT_CONNECT` - if set to true, will connect the repository within Argo CD,
+  so it's readily available to use. Defaults to `true`.
+
 ## Customization
 
 You can provision custom boxes by doing the following:

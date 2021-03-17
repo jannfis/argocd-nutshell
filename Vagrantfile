@@ -20,6 +20,10 @@ export K3S_VERSION=#{ENV['K3S_VERSION']}
 export DEX_CLIENT_ID=#{ENV['DEX_CLIENT_ID']}
 export DEX_CLIENT_SECRET=#{ENV['DEX_CLIENT_SECRET']}
 export DEX_GH_ORG_NAME=#{ENV['DEX_GH_ORG_NAME']}
+export GIT_ENABLED=#{ENV['GIT_ENABLED']}
+export GIT_CLONE_REPO=#{ENV['GIT_CLONE_REPO']}
+export GIT_CHECKOUT=#{ENV['GIT_CHECKOUT']}
+export GIT_CONNECT=#{ENV['GIT_CONNECT']}
 EOF
 SCRIPT
 
@@ -63,7 +67,7 @@ Vagrant.configure("2") do |config|
       apt-get update
       apt-get install -y python3-pip firefox
       pip3 install ansible=="2.9.16"
-      pip3 install openshift
+      pip3 install openshift passlib
     SHELL
   end
 
@@ -74,6 +78,9 @@ Vagrant.configure("2") do |config|
   # Provision the box using a local ansible. 
   config.vm.provision "ansible_local" do |a|
     a.playbook = "argocd-nutshell.yaml"
+    a.galaxy_role_file = "ansible-requirements.yaml"
+    a.galaxy_roles_path = '/home/vagrant/.ansible/collections'
+    a.galaxy_command = 'ansible-galaxy collection install -r %{role_file} -p %{roles_path}'
     a.become = true
     a.extra_vars = "config/#{ENV['ARGOCD_VARIANT'] || 'default'}.yaml"
   end

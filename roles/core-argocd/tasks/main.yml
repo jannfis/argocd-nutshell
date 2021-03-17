@@ -77,10 +77,6 @@
   become: yes
   become_user: vagrant
 
-- name: Wait a little for Argo CD to settle
-  pause:
-    seconds: 5
-
 - name: Perform login to argocd
   shell:
     cmd: /usr/local/bin/argocd login --username admin --password admin --insecure {{ argocd.service_ip }}

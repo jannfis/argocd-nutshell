@@ -1,0 +1,120 @@
+- name: Ensure packages for Git are installed correctly
+  apt:
+    name:
+    - git
+    - nginx
+    - fcgiwrap
+    state: latest
+
+- name: Ensure all required directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: vagrant
+  with_items:
+    - /repos/git
+    - /repos/cert
+
+- name: Ensure private key for TLS exists
+  community.crypto.openssl_privatekey:
+    path: /repos/cert/tls-private-key.pem
+    size: 2048
+    mode: 0400
+    owner: vagrant
+
+- name: Set listener IP for nginx
+  set_fact:
+    local_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+
+- name: Ensure CSR for TLS exists
+  community.crypto.openssl_csr:
+    path: /repos/cert/tls-request.csr
+    owner: vagrant
+    privatekey_path: /repos/cert/tls-private-key.pem
+    common_name: Argo CD in a nutshell
+    country_name: DE
+    organization_name: Acme, Inc.
+    subject_alt_name:
+      - "DNS:argocd-nutshell"
+      - "DNS:localhost"
+      - "IP:{{ local_ip }}"
+      - "IP:127.0.0.1"
+
+- name: Ensure certificate for TLS exists
+  community.crypto.x509_certificate:
+    path: /repos/cert/tls-certificate.pem
+    owner: vagrant
+    privatekey_path: /repos/cert/tls-private-key.pem
+    csr_path: /repos/cert/tls-request.csr
+    provider: selfsigned
+
+- name: Ensure nginx.conf is up-to-date
+  template:
+    src: nginx/nginx.conf
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    mode: 0644
+
+- name: Ensure nginx service is started
+  service:
+    name: nginx
+    state: restarted
+    enabled: true
+
+- name: Ensure authentication is setup
+  community.general.htpasswd:
+    path: /repos/git/.htpasswd
+    owner: vagrant
+    name: git
+    password: git
+
+- name: Ensure FastCGI is running
+  service:
+    name: fcgiwrap
+    state: started
+    enabled: true
+
+- name: Ensure Git e-mail is configured correctly
+  shell: git config --global user.email "example@example.com"
+  become: yes
+  become_user: vagrant
+  when: git.clone.repository is defined
+
+- name: Ensure Git user is configured correctly
+  shell: git config --global user.name "git"
+  become: yes
+  become_user: vagrant
+  when: git.clone.repository is defined
+
+- name: Ensure Git credential helper is configured correctly
+  shell: git config --global credential.helper store
+  become: yes
+  become_user: vagrant
+  when: git.clone.repository is defined
+
+- name: Ensure initial repositories are available
+  git:
+    repo: "{{ git.clone.repository }}"
+    dest: /repos/git/{{ git.clone.repository | basename }}.git
+    bare: yes
+  become: yes
+  become_user: vagrant
+  when: git.clone.repository is defined
+
+- name: Ensure Git repository can be written to
+  shell: chgrp -R www-data /repos/git
+  when: git.clone.repository is defined
+
+- name: Ensure repository is checked out locally
+  git:
+    repo: http://git:git@{{ local_ip }}:9080/git/{{ git.clone.repository | basename }}
+    dest: /home/vagrant/{{ git.clone.repository | basename }}
+  become: yes
+  become_user: vagrant
+  when: git.clone.repository is defined and git.clone.checkout is defined and git.clone.checkout == "true"
+
+- name: Add repository to Argo CD
+  shell: argocd repo add --username git --password git --type git http://{{ local_ip }}:9080/git/{{ git.clone.repository | basename }}
+  become: yes
+  become_user: vagrant
+  when: git.clone.repository is defined and git.clone.connect is defined and git.clone.connect == "true"

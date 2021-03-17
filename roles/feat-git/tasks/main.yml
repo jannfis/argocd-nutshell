@@ -1,0 +1,3 @@
+- name: Include Git setup tasks
+  import_tasks: git.yml
+  when: git.enabled is defined and git.enabled == true or git.enabled == "true"

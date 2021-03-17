@@ -28,3 +28,10 @@ kubernetes:
   # Specify the Kubernetes version to use, e.g. `v1.19.5+k3s1`. We install K3s,
   # so version specified must be available from K3s releases. 
   version: "{{ lookup('env', 'K3S_VERSION') }}"
+
+git:
+  enabled: "{{ lookup('env', 'GIT_ENABLED') | default('false', True) }}"
+  clone:
+    repository: "{{ lookup('env', 'GIT_CLONE_REPO') | default('https://github.com/argoproj/argocd-example-apps', True) }}"
+    checkout: "{{ lookup('env', 'GIT_CHECKOUT') | default('true', True) }}"
+    connect: "{{ lookup('env', 'GIT_CONNECT') | default('true', True) }}"
