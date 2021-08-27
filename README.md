@@ -41,7 +41,7 @@ status:
 
 ```shell
 $ vagrant ssh
-vagrant@argocd-nutshell:~$ kubectl get pods
+vagrant@argocd-nutshell:~$ kubectl get pods -n argocd
 NAME                                  READY   STATUS    RESTARTS   AGE
 argocd-redis-6fb68d9df5-sx7xh         1/1     Running   0          4m30s
 argocd-dex-server-748c65b578-kqlpp    1/1     Running   0          4m30s

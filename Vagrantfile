@@ -28,7 +28,7 @@ EOF
 SCRIPT
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/groovy64"
+  config.vm.box = "ubuntu/xenial64"
   config.vm.hostname = "argocd-nutshell"
   config.vm.define "argocd-nutshell"
 
