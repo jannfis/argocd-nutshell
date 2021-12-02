@@ -73,14 +73,14 @@
   until: replicas.stdout == "1"
   retries: 60
   delay: 10
-  when: argocd.cli.autologin is true
+  when: argocd.cli.autologin == true
   become: yes
   become_user: vagrant
 
 - name: Perform login to argocd
   shell:
     cmd: /usr/local/bin/argocd login --username admin --password admin --insecure {{ argocd.service_ip }}
-  when: argocd.cli.autologin is true
+  when: argocd.cli.autologin == true
   become: yes
   become_user: vagrant
 

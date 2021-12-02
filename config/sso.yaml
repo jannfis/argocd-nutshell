@@ -17,8 +17,8 @@ argocd:
 
   # The argocd-server service will be converted to be of  of type LoadBalancer
   # and the service_ip will be requested to be set. Must be in the range between
-  # 192.168.254.100 and 192.168.254.240
-  service_ip: 192.168.254.100
+  # 192.168.56.100 and 192.168.56.240
+  service_ip: 192.168.56.100
 
   # argocd.image lets you use a different image than in the manifests
   # OPTIONAL.
