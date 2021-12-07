@@ -102,7 +102,10 @@
   when: git.clone.repository is defined
 
 - name: Ensure Git repository can be written to
-  shell: chgrp -R www-data /repos/git
+  file:
+    group: www-data
+    path: /repos/git
+    recurse: true
   when: git.clone.repository is defined
 
 - name: Ensure repository is checked out locally

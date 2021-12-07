@@ -20,7 +20,7 @@ You will need
 and
 [VirtualBox](https://www.virtualbox.org/)
 installed on your system. Also, this box will set-up a private network with
-CIDR range `192.168.254.0/24`, so make sure you don't have this already
+CIDR range `192.168.56.0/24`, so make sure you don't have this already
 setup on your host, or have a route to an already existing net or host in
 that range.
 
@@ -53,7 +53,7 @@ argocd-server-846cf6844-9dvcl         1/1     Running   0          4m30s
 If all pods are running correctly, you can then access the web UI by visiting
 
 ```shell
-https://192.168.254.100
+https://192.168.56.100
 ```
 
 The default username is `admin`, and the default password is `admin` as well.

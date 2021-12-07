@@ -6,7 +6,7 @@ VM_MEM=8096
 
 # IP address of the VM. Must be in a dedicated subnet, that's not yet routed
 # on your host.
-VM_IPADDR="192.168.254.2"
+VM_IPADDR="192.168.56.2"
 
 # The following environment variables will be set in the box, and are required
 # by the ansible provisioner as well.
@@ -28,7 +28,7 @@ EOF
 SCRIPT
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "ubuntu/focal64"
   config.vm.hostname = "argocd-nutshell"
   config.vm.define "argocd-nutshell"
 

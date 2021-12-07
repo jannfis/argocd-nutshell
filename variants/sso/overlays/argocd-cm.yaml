@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: argocd-cm
 data:
-  url: https://192.168.254.100
+  url: https://192.168.56.100
   dex.config: |
     connectors:
     - config:
@@ -11,7 +11,7 @@ data:
         clientSecret: {{ dex.client_secret | default('') }}
         orgs:
         - name: {{ dex.gh_org_name | default('none') }}
-        redirectURI: https://192.168.254.100/api/dex/callback
+        redirectURI: https://192.168.56.100/api/dex/callback
       id: github
       name: GitHub
       type: github
