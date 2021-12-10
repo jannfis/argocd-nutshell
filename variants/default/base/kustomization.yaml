@@ -11,3 +11,15 @@ patches:
       version: v1
       kind: Secret
       name: argocd-secret
+  - path: ../patches/argocd-application-controller.json
+    target:
+      version: v1
+      group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
+      name: argocd-application-controller
+  - path: ../patches/argocd-server.json
+    target:
+      version: v1
+      group: rbac.authorization.k8s.io
+      kind: RoleBinding
+      name: argocd-server

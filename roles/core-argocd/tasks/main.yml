@@ -1,6 +1,6 @@
 - name: Ensure argocd namespace exists
   k8s:
-    name: argocd
+    name: "{{ argocd.namespace }}"
     kind: Namespace
     state: present
   become: yes
@@ -49,7 +49,7 @@
 - name: Apply Argo CD manifests to the cluster
   k8s:
     src: /kustomize/argocd-install-{{ argocd.variant | default('default') }}.yaml
-    namespace: argocd
+    namespace: "{{ argocd.namespace }}"
     state: present
   become: yes
   become_user: vagrant
@@ -68,7 +68,7 @@
 
 - name: Wait up to 10 minutes for argocd-server replicaset to become ready
   shell:
-    cmd: kubectl get -n argocd deployments.apps argocd-server -o jsonpath='{ .status.readyReplicas }' 
+    cmd: kubectl get -n {{ argocd.namespace }} deployments.apps argocd-server -o jsonpath='{ .status.readyReplicas }' 
   register: replicas
   until: replicas.stdout == "1"
   retries: 60
@@ -86,6 +86,6 @@
 
 - name: Set default namespace in kube context to argocd
   shell:
-    cmd: kubens argocd
+    cmd: kubens {{ argocd.namespace }}
   become: yes
   become_user: vagrant
