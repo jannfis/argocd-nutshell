@@ -12,6 +12,7 @@ VM_IPADDR="192.168.56.2"
 # by the ansible provisioner as well.
 $set_environment_variables = <<SCRIPT
 tee "/etc/profile.d/myvars.sh" > "/dev/null" <<EOF
+export ARGOCD_NAMESPACE=#{ENV['ARGOCD_NAMESPACE'] || 'argocd'}
 export ARGOCD_VERSION=#{ENV['ARGOCD_VERSION']}
 export ARGOCD_CLI_VERSION=#{ENV['ARGOCD_CLI_VERSION']}
 export ARGOCD_IMAGE=#{ENV['ARGOCD_IMAGE']}

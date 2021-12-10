@@ -49,6 +49,7 @@
     kind: Namespace
     name: metallb-system
     state: present
+    kubeconfig: /home/vagrant/.kube/config
   become: yes
   become_user: vagrant
 
