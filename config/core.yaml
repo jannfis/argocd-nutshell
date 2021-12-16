@@ -1,0 +1,41 @@
+# Configuration file for variant 'default'
+argocd:
+  namespace: "{{ lookup('env', 'ARGOCD_NAMESPACE') | default('argocd', True) }}"
+
+  # The variant to use
+  variant: "{{ lookup('env', 'ARGOCD_VARIANT') | default('default', True) }}"
+
+  # The version (tag) to use as `ref` for remote kustomize base, e.g `v1.8.2`
+  # Use `HEAD` to get the latest version from master branch
+  version: "{{ lookup('env', 'ARGOCD_VERSION') | default('stable', True) }}"
+
+  # CLI specific configuration
+  cli:
+    # specifices the CLI version to install (fetched from releases),
+    # e.g. `v1.8.2`. If set to `latest`, fetches the latest released version.
+    version: "{{ lookup('env', 'ARGOCD_CLI_VERSION') | default('latest', True) }}"
+    # if autologin is set to true, setup will perform login to Argo CD
+    autologin: false
+
+  # The argocd-server service will be converted to be of  of type LoadBalancer
+  # and the service_ip will be requested to be set. Must be in the range between
+  # 192.168.56.100 and 192.168.56.240
+  service_ip: ''
+
+  # argocd.image lets you use a different image than in the manifests
+  # OPTIONAL.
+  image: "{{ lookup('env', 'ARGOCD_IMAGE') }}"
+
+  core: true
+
+kubernetes:
+  # Specify the Kubernetes version to use, e.g. `v1.19.5+k3s1`. We install K3s,
+  # so version specified must be available from K3s releases. 
+  version: "{{ lookup('env', 'K3S_VERSION') }}"
+
+git:
+  enabled: "{{ lookup('env', 'GIT_ENABLED') | default('false', True) }}"
+  clone:
+    repository: "{{ lookup('env', 'GIT_CLONE_REPO') | default('https://github.com/argoproj/argocd-example-apps', True) }}"
+    checkout: "{{ lookup('env', 'GIT_CHECKOUT') | default('true', True) }}"
+    connect: "{{ lookup('env', 'GIT_CONNECT') | default('true', True) }}"
