@@ -1,0 +1,18 @@
+resources:
+- https://github.com/argoproj/argo-cd/manifests/core-install?ref={{ argocd.version }}
+
+patchesStrategicMerge:
+- ../overlays/argocd-cm.yaml
+
+patches:
+  - path: ../patches/argocd-secret.json
+    target:
+      version: v1
+      kind: Secret
+      name: argocd-secret
+  - path: ../patches/argocd-application-controller.json
+    target:
+      version: v1
+      group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
+      name: argocd-application-controller
