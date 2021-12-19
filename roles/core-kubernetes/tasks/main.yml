@@ -1,3 +1,15 @@
+- name: Reconfigure sshd
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: ^UseDNS\ .*$
+    line: UseDNS no
+
+- name: Restart sshd
+  service:
+    name: sshd
+    state: restarted
+    enabled: yes
+
 - name: Fetch K3s installation script
   get_url:
     url: https://get.k3s.io/
