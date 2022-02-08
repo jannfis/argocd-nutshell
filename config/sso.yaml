@@ -1,5 +1,7 @@
 # Configuration file for variant 'default'
 argocd:
+  namespace: "{{ lookup('env', 'ARGOCD_NAMESPACE') | default('argocd', True) }}"
+    
   # The variant to use
   variant: "{{ lookup('env', 'ARGOCD_VARIANT') | default('default', True) }}"
 

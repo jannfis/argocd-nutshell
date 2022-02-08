@@ -139,6 +139,32 @@ The following environment variables control what is set up:
 * `GIT_CONNECT` - if set to true, will connect the repository within Argo CD,
   so it's readily available to use. Defaults to `true`.
 
+## Variants
+
+Variants are certain pre-configured installations of Argo CD that
+`argocd-nutshell` can provision for you.
+
+A variant is specified by launching your box with `ARGOCD_VARIANT` set to
+the name of the variant you want to launch.
+
+### Single-Sign-On with GitHub
+
+The variant `sso` sets up Argo CD pre-configured to do SSO with a GitHub org.
+You will need to setup a GitHub oauth app for this, that needs to match the
+following configuration:
+
+![OAuth configuration](docs/images/github-oauth-config.png)
+
+The client ID, client secret and GitHub org name must be passed to the Vagrant
+provisioner like follows:
+
+```
+DEX_CLIENT_ID=<client_id> \
+  DEX_CLIENT_SECRET=<client_secret> \
+  DEX_GH_ORG_NAME=<name of your GH org> \
+  ARGOCD_VARIANT=sso vagrant up
+  ```
+
 ## Customization
 
 You can provision custom boxes by doing the following:
