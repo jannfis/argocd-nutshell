@@ -20,7 +20,7 @@
   shell:
     cmd: /tmp/install-k3s.sh
   environment:
-    INSTALL_K3S_VERSION: "{{ kubernetes.version | default('v1.20.0+k3s2', True) }}"
+    INSTALL_K3S_VERSION: "{{ kubernetes.version | default('v1.25.5+k3s1', True) }}"
     # We install metallb
     INSTALL_K3S_EXEC: "--disable servicelb --disable traefik"
 
