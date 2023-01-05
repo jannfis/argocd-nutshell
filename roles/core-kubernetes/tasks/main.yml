@@ -65,16 +65,31 @@
   become: yes
   become_user: vagrant
 
-- name: Render metallb manifests
+- name: Render metallb installation manifests
   shell:
-    cmd: kustomize build . > /tmp/metallb-manifests.yaml
-    chdir: /vagrant/kube/metallb
+    cmd: kustomize build . > /tmp/metallb-crd.yaml
+    chdir: /vagrant/kube/metallb/crd
+  become: yes
+  become_user: vagrant
+
+- name: Render metallb installation manifests
+  shell:
+    cmd: kustomize build . > /tmp/metallb-install.yaml
+    chdir: /vagrant/kube/metallb/install
+  become: yes
+  become_user: vagrant
+
+- name: Install metallb CRDs into the cluster
+  k8s:
+    src: /tmp/metallb-crd.yaml
+    namespace: metallb-system
+    state: present
   become: yes
   become_user: vagrant
 
 - name: Install metallb into the cluster
   k8s:
-    src: /tmp/metallb-manifests.yaml
+    src: /tmp/metallb-install.yaml
     namespace: metallb-system
     state: present
   become: yes
