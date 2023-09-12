@@ -121,3 +121,5 @@
   become: yes
   become_user: vagrant
   when: git.clone.repository is defined and git.clone.connect is defined and git.clone.connect == "true"
+  retries: 5
+  delay: 10
